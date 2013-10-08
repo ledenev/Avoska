@@ -14,7 +14,7 @@ class FileInfo(object):
         self.attr = FileAttr(kind, file_mode, file_ctime, file_size)
 
     def __str__(self):
-        return self.name + " : " + self.attr()
+        return self.name + " : " + str(self.attr)
 
     def name(self):
         return self.name
@@ -31,9 +31,9 @@ class FileAttr(object):
         self.size  = file_size
 
     def __str__(self):
-        modif = time.strftime("%b %d, %Y %H:%M:%S", time.localtime(self.file_ctime))
+        modif = time.strftime("%b %d, %Y %H:%M:%S", time.localtime(self.ctime))
         file_kind = config_os_x.entry_kind[self.kind]
-        return "{0:s}, size = {1:d}, modif at {2:s}".format(file_kind, self.file_size, modif)
+        return "{0:s}, size = {1:d}, modif at {2:s}".format(file_kind, self.size, modif)
 
     def __eq__(self, other):
         if other is None:
