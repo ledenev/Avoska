@@ -34,12 +34,8 @@ def walk_tree(directory, visitor):
 
 
 if __name__ == '__main__':
-
     dirs_without_read_permissions = []
+
     root_dir = config.settings["root_dir"]
-
-    print(config.settings)
-    exit(0)
-
     visitor = visitors_unix.UnixDirVisitor()
     walk_tree(root_dir, visitor)
