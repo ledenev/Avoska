@@ -6,7 +6,7 @@ __license__ = "Public Domain"
 __version__ = "0.0.01"
 
 
-class FileSystem_DataBase(object):
+class FileSystemDataBase(object):
     def __init__(self):
         self.db = {}
 
@@ -17,4 +17,4 @@ class FileSystem_DataBase(object):
         self.db[dir] = list
 
 
-FileSystem_DB = FileSystem_DataBase()
+FileSystem_DB = FileSystemDataBase()

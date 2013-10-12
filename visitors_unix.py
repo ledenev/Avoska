@@ -6,13 +6,14 @@ __license__ = "Public Domain"
 __version__ = "0.0.01"
 
 import os
-import config_os_x
 import file_info
 import filesystem_db
+from setup import config_os_x
+
 
 class UnixDirVisitor(object):
 
-    def process_folder_contents(self, dir_name, names):
+    def process_directory_contents(self, dir_name, names):
         folders = []
         file_info_list = []
         names = self.filter_out_system_names(dir_name, names)

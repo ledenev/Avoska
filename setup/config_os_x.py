@@ -6,8 +6,6 @@ __license__ = "Public Domain"
 __version__ = "0.0.01"
 
 
-path_to_database = "/Volumes/files-hdd/Avoska_DB"
-
 root_system_names = (
     ".DocumentRevisions-V100",
     ".Spotlight-V100",

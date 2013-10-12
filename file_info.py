@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from setup import config_os_x
+
 __author__ = "Alexander Ledenev"
 __copyright__ = "Copyleft (>)"
 __license__ = "Public Domain"
 __version__ = "0.0.01"
 
 import time
-import config_os_x
+
 
 class FileInfo(object):
     def __init__(self, name, kind, file_mode, file_ctime, file_size):
@@ -31,9 +33,9 @@ class FileAttr(object):
         self.size  = file_size
 
     def __str__(self):
-        modif = time.strftime("%b %d, %Y %H:%M:%S", time.localtime(self.ctime))
         file_kind = config_os_x.entry_kind[self.kind]
-        return "{0:s}, size = {1:d}, modif at {2:s}".format(file_kind, self.size, modif)
+        modified = time.strftime("%b %d, %Y %H:%M:%S", time.localtime(self.ctime))
+        return "{0:s}, size = {1:d}, modified at {2:s}".format(file_kind, self.size, modified)
 
     def __eq__(self, other):
         if other is None:
