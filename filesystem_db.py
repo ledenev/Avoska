@@ -16,10 +16,15 @@ class DatabaseManager(object):
         database_list = filter(name_filter, contents)
         return database_list
 
-    def write_database(self, database_instance):
-        pass
+    def create_database(self):
+        database_suffix = "1"
+        database_name = config.settings['database_prefix'] + database_suffix
+        return FileSystemDatabase(database_name)
 
     def read_database(self, database_name):
+        pass
+
+    def write_database(self, database_instance):
         pass
 
     def delete_database(self, database_name):
@@ -27,7 +32,8 @@ class DatabaseManager(object):
 
 
 class FileSystemDatabase(object):
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
         self.db = {}
 
     def read(self, dir):
