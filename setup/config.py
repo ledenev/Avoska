@@ -9,10 +9,10 @@ import os
 
 path_to_database = os.path.expanduser("~/Avoska_DB")
 
-settings = {
-    "root_dir" : "/",
-    "database" : path_to_database
-}
+settings = dict(
+    root_dir = "/",
+    database_folder = path_to_database,
+    database_prefix = "filesystem_")
 
 try:
     from setup import local
