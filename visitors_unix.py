@@ -36,7 +36,8 @@ class UnixDirVisitor(object):
             info = file_info.FileInfo(entry, entry_id, stat_info.st_mode, stat_info.st_ctime, stat_info.st_size)
             file_info_list.append(info)
 
-        filesystem_db.FileSystem_DB.write(dir_name, file_info_list)
+        db = filesystem_db.CurrentDatabase()
+        db.write(dir_name, file_info_list)
 
         return folders
 

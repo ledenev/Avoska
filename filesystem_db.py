@@ -6,29 +6,42 @@ __license__ = "Public Domain"
 __version__ = "0.0.01"
 
 import os
+import time
 from setup import config
 
-class DatabaseManager(object):
-    def show_databases(self):
-        name_filter = lambda x: config.settings['database_prefix'] == x[0:len(config.settings['database_prefix'])]
 
-        contents = os.listdir(config.settings['database_folder'])
-        database_list = filter(name_filter, contents)
-        return database_list
+def show_databases():
+    name_filter = lambda x: config.settings['database_prefix'] == x[0:len(config.settings['database_prefix'])]
 
-    def create_database(self):
-        database_suffix = "1"
-        database_name = config.settings['database_prefix'] + database_suffix
-        return FileSystemDatabase(database_name)
+    contents = os.listdir(config.settings['database_folder'])
+    list_of_databases = filter(name_filter, contents)
+    return list_of_databases
 
-    def read_database(self, database_name):
-        pass
+def read_database(self, database_name):
+    pass
 
-    def write_database(self, database_instance):
-        pass
+def write_database(self, database_instance):
+    pass
 
-    def delete_database(self, database_name):
-        pass
+def delete_database(self, database_name):
+    pass
+
+
+class Singleton(object):
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+             cls.instance = super(Singleton, cls).__new__(cls)
+        return cls.instance
+
+
+class CurrentDatabase(Singleton):
+    def __init__(self):
+            database_suffix = str(time.time())
+            database_name = config.settings['database_prefix'] + '.' + database_suffix
+            self.__current = FileSystemDatabase(database_name)
+
+    def write(self, dir, list):
+        self.__current.write(dir, list)
 
 
 class FileSystemDatabase(object):
@@ -41,6 +54,3 @@ class FileSystemDatabase(object):
 
     def write(self, dir, list):
         self.db[dir] = list
-
-
-FileSystem_DB = FileSystemDatabase()
