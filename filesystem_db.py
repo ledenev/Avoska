@@ -27,21 +27,24 @@ def delete_database(self, database_name):
     pass
 
 
-class Singleton(object):
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-             cls.instance = super(Singleton, cls).__new__(cls)
-        return cls.instance
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
 
 
-class CurrentDatabase(Singleton):
+class CurrentDatabase(metaclass=Singleton):
+    current = None
     def __init__(self):
+        if self.current == None:
             database_suffix = str(time.time())
-            database_name = config.settings['database_prefix'] + '.' + database_suffix
-            self.__current = FileSystemDatabase(database_name)
+            database_name = config.settings['database_prefix'] + database_suffix
+            self.current = FileSystemDatabase(database_name)
 
     def write(self, dir, list):
-        self.__current.write(dir, list)
+        self.current.write(dir, list)
 
 
 class FileSystemDatabase(object):
