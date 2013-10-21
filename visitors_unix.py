@@ -15,9 +15,9 @@ class UnixDirVisitor(object):
 
     def process_directory_contents(self, dir_name, names):
         folders = []
-        file_info_list = []
-        names = self.filter_out_system_names(dir_name, names)
+        db_record = filesystem_db.DatabaseRecord(dir_name)
 
+        names = self.filter_out_system_names(dir_name, names)
         for entry in names:
             full_name = os.path.join(dir_name, entry)
 
@@ -34,10 +34,10 @@ class UnixDirVisitor(object):
 
             stat_info = os.lstat(full_name)
             info = file_info.FileInfo(entry, entry_id, stat_info.st_mode, stat_info.st_ctime, stat_info.st_size)
-            file_info_list.append(info)
+            db_record.append(info)
 
         db = filesystem_db.CurrentDatabase()
-        db.write(dir_name, file_info_list)
+        db.write(db_record)
 
         return folders
 

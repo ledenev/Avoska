@@ -43,6 +43,7 @@ if __name__ == '__main__':
     db = filesystem_db.CurrentDatabase()
     db.save()
 
+#----------   Test: print latest database   ----------
     databases = filesystem_db.show_databases()
     db_tst = filesystem_db.CurrentDatabase(databases[-1])
     db_tst.print_db()

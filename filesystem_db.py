@@ -10,6 +10,52 @@ import time
 import pickle
 from setup import config
 
+#==========   Database Record   ==========
+
+class DatabaseRecord(object):
+
+    def __init__(self, directory):
+        self.dir_name = directory
+        self.entries_list = []
+
+    def __str__(self):
+        contents_str = ','.join([str(x) for x in self.entries_list])
+        return self.dir_name + " : " + contents_str
+
+    def directory(self):
+        return self.dir_name
+
+    def contents(self):
+        return self.entries_list
+
+    def set_contents(self, entries):
+        self.entries_list = entries
+
+    def append(self, entry):
+        self.entries_list.append(entry)
+
+    def compare(self, other):
+        '''
+        Current object is current record
+        The argument 'other' is older record
+        Returns tuple: (list of deleted entries, list of new entries)
+        '''
+        if other is None:
+            print("Error: Argument of compare is None")
+            exit(1)
+
+        if self.dir_name != other.directory():
+            print("Error: Names of directories for comparison are not the same")
+            exit(1)
+
+        if other == [] or self.contents == []:
+            return (other, self.contents)
+        else:
+            old_set = set(other)
+            current_set = set(self.contents)
+            return (list(old_set - current_set), list(current_set - old_set))
+
+
 #==========   Database   ==========
 
 class FileSystemDatabase(object):
@@ -35,10 +81,13 @@ class FileSystemDatabase(object):
         return time.strftime("%d %b %Y %H:%M:%S", self.version())
 
     def read(self, dir):
-        return self.db[dir]
+        record = DatabaseRecord(dir)
+        record.set_contents(self.db[dir])
+        return record
 
-    def write(self, dir, list):
-        self.db[dir] = list
+    def write(self, db_record):
+        dir = db_record.directory()
+        self.db[dir] = db_record.contents()
 
     def load(self, database_name):
         self.db_name = database_name
