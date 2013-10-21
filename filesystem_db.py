@@ -145,4 +145,4 @@ def show_databases():
     return list_of_databases
 
 def delete_database(database_name):
-    pass
+    os.remove(os.path.join(config.settings['database_folder'], database_name))
