@@ -8,6 +8,7 @@ __version__ = "0.0.01"
 import os
 import sys
 import visitors_unix
+import filesystem_db
 from setup import config
 
 global dirs_without_read_permissions       # Change it !!! Usage of globals is not good.
@@ -39,3 +40,9 @@ if __name__ == '__main__':
     root_dir = config.settings["root_dir"]
     visitor = visitors_unix.UnixDirVisitor()
     walk_tree(root_dir, visitor)
+    db = filesystem_db.CurrentDatabase()
+    db.save()
+
+    databases = filesystem_db.show_databases()
+    db_tst = filesystem_db.CurrentDatabase(databases[-1])
+    db_tst.print_db()

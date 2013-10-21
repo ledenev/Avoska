@@ -7,25 +7,73 @@ __version__ = "0.0.01"
 
 import os
 import time
+import pickle
 from setup import config
 
+#==========   Database   ==========
 
-def show_databases():
-    name_filter = lambda x: config.settings['database_prefix'] == x[0:len(config.settings['database_prefix'])]
+class FileSystemDatabase(object):
 
-    contents = os.listdir(config.settings['database_folder'])
-    list_of_databases = filter(name_filter, contents)
-    return list_of_databases
+    def __init__(self, database_name = ""):
+        if database_name == "":
+            self.db_name = config.settings['db_name_prefix'] + str(time.time())
+            self.db = {}
+        else:
+            self.load(database_name)
 
-def read_database(self, database_name):
-    pass
+    def __str__(self):
+        return self.db_name
 
-def write_database(self, database_instance):
-    pass
+    def name(self):
+        return self.db_name
 
-def delete_database(self, database_name):
-    pass
+    def version(self):
+        db_prefix, db_version = self.db_name.split(config.settings['db_name_prefix_end'])
+        return float(db_version)
 
+    def version_str(self):
+        return time.strftime("%d %b %Y %H:%M:%S", self.version())
+
+    def read(self, dir):
+        return self.db[dir]
+
+    def write(self, dir, list):
+        self.db[dir] = list
+
+    def load(self, database_name):
+        self.db_name = database_name
+        db_full_name = os.path.join(config.settings['database_folder'], database_name)
+        try:
+            db_file = open(db_full_name, 'rb')
+            self.db = pickle.load(db_file)
+            db_file.close()
+        except FileNotFoundError:
+            print("No such file or directory: %s" % db_full_name)
+            exit(1)
+
+    def save(self):
+        db_full_name = os.path.join(config.settings['database_folder'], self.db_name)
+        try:
+            db_file = open(db_full_name, 'wb')
+            pickle.dump(self.db, db_file)
+            db_file.close()
+        except:
+            print("Error: database save ")
+            exit(1)
+
+    def print_db(self):
+        db_full_name = os.path.join(config.settings['database_folder'], self.db_name)
+        print()
+        print("        Database: %s" % db_full_name)
+
+        for dir in self.db:
+            print()
+            print(dir)
+            for file_inf in self.db[dir]:
+                print("    %s" % str(file_inf))
+
+
+#==========   Current Database Singleton   ==========
 
 class Singleton(type):
     _instances = {}
@@ -34,26 +82,18 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
-
-class CurrentDatabase(metaclass=Singleton):
-    current = None
+class CurrentDatabase(FileSystemDatabase, metaclass=Singleton):
     def __init__(self):
-        if self.current == None:
-            database_suffix = str(time.time())
-            database_name = config.settings['database_prefix'] + database_suffix
-            self.current = FileSystemDatabase(database_name)
-
-    def write(self, dir, list):
-        self.current.write(dir, list)
+        super().__init__()
 
 
-class FileSystemDatabase(object):
-    def __init__(self, name):
-        self.name = name
-        self.db = {}
+#==========   Operations with Databases   ==========
 
-    def read(self, dir):
-        return self.db[dir]
+def show_databases():
+    prefix_length = len(config.settings['db_name_prefix'])
+    contents = os.listdir(config.settings['database_folder'])
+    list_of_databases = [name for name in contents if name[:prefix_length] == config.settings['db_name_prefix']]
+    return list_of_databases
 
-    def write(self, dir, list):
-        self.db[dir] = list
+def delete_database(database_name):
+    pass
